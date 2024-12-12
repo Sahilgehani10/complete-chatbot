@@ -8,6 +8,7 @@ from audio_handler import transcribe_audio
 from llm_chain import load_normal_chain, load_pdf_chat_chain
 from image_handler import handle_image
 from pdf_handler import add_documents_to_db
+from html_templates import get_bot_template,get_user_template,css
 
 with open("config.yml", "r") as f:
     config = yaml.safe_load(f)
@@ -41,6 +42,7 @@ def save_chat_history():
 
 def main():
     st.title("Multimodal Chat App")
+    st.write(css, unsafe_allow_html=True)
     
     # Sidebar for chat sessions
     st.sidebar.title("Chat Sessions")
@@ -131,7 +133,11 @@ def main():
             with chat_container:
                 st.write("Chat History:")
                 for message in chat_history.messages:
-                    st.chat_message(message.type).write(message.content)
+                    if message.type=="human":
+                        st.write(get_user_template(message.content),unsafe_allow_html=True)
+                    else:
+                        st.write(get_bot_template(message.content),unsafe_allow_html=True)
+                    
         
     # Save chat history
     save_chat_history()
