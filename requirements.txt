@@ -9,4 +9,5 @@ librosa
 pyaml
 chromadb
 streamlit_chat
+torch
 langchain_community
