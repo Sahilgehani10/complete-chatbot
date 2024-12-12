@@ -13,3 +13,4 @@ torch
 langchain_community
 soundfile
 llama-cpp-python
+sentence-transformers
