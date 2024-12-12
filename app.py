@@ -71,9 +71,6 @@ def main():
     chat_container = st.container()
 
     # Display existing messages
-    with chat_container:
-        for message in chat_history.messages:
-            st.chat_message(message.type).write(message.content)
 
     # Text input 
     user_input = st.text_input("Type your message here", key="user_input", on_change=set_send_input)
@@ -118,6 +115,12 @@ def main():
             llm_response = llm_chain.run(st.session_state.user_question)
             st.session_state.user_question = ""
 
+    if chat_history.messages != []:
+            with chat_container:
+                st.write("Chat History:")
+                for message in chat_history.messages:
+                    st.chat_message(message.type).write(message.content)
+        
     # Save chat history
     save_chat_history()
 
