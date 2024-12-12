@@ -6,6 +6,7 @@ import os
 from utils import save_chat_history_json, load_chat_history_json, get_timestamp
 from audio_handler import transcribe_audio
 from llm_chain import load_normal_chain
+from image_handler import handle_image
 
 with open("config.yml", "r") as f:
     config = yaml.safe_load(f)
@@ -95,6 +96,7 @@ def main():
         send_button = st.button("Send", key="send_button", on_click=clear_input_field)
 
     uploaded_audio=st.sidebar.file_uploader("Upload audio file", type=["wav", "mp3","ogg","m4a"])
+    uploaded_image=st.sidebar.file_uploader("Upload image file", type=["jpg", "jpeg","png"])
 
     if uploaded_audio:
         transcribed_audio=transcribe_audio(uploaded_audio.getvalue())
@@ -103,6 +105,15 @@ def main():
 
     # Process text input
     if send_button or st.session_state.send_input:
+        if uploaded_image:
+            with st.spinner("Processing img..."):
+                user_message="describe this image in detail please"
+                if st.session_state.user_question != "":
+                    user_message = st.session_state.user_question
+                    st.session_state.user_question = ""
+                llm_answer=handle_image(uploaded_image.getvalue(),st.session_state.user_question)
+                chat_history.add_user_message(user_message)
+                chat_history.add_ai_message(llm_answer)
         if st.session_state.user_question != "":
             llm_response = llm_chain.run(st.session_state.user_question)
             st.session_state.user_question = ""

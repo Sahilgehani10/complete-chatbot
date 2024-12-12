@@ -11,3 +11,5 @@ chromadb
 streamlit_chat
 torch
 langchain_community
+soundfile
+llama-cpp-python
